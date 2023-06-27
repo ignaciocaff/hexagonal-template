@@ -1,0 +1,34 @@
+version: '3.5'
+services:
+  evaluaciones-back:
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile
+    container_name: datamarket-back
+    ports:
+      - 3000:3000
+    networks:
+      - datamarket-network
+    # environment:
+    #   PORT: ${PORT}
+    #   DB_URI: ${DB_URI}
+  datamarket-mongo:
+    container_name: datamarket-mongo
+    image: mongo:5.0.10
+    volumes:
+      - datamarket-data:/data
+      - ./init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh:ro
+    environment:
+      MONGO_INITDB_DATABASE: 'test'
+      MONGO_INITDB_ROOT_USERNAME: 'test-user'
+      MONGO_INITDB_ROOT_PASSWORD: 'test-123'
+    networks:
+      - datamarket-network
+    ports:
+      - 27017:27017
+networks:
+  datamarket-network:
+    external: false
+    name: datamarket-network
+volumes:
+  datamarket-data:
